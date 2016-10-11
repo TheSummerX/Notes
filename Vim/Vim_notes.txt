@@ -1,0 +1,355 @@
+Vim笔记 Vim_Notes
+A note at Ubuntu vim74&gedit by myself from 10 1st 2016.
+See VIM USER MANUAL--usr_toc.txt with :h[elp] or at /usr/share/vim/vim74/doc/.The directory also contains other help info.
+
+一、简述
+    官方在www.vim.org简介为：
+Vim - the ubiquitous text editor
+Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient. It is included as "vi" with most UNIX systems and with Apple OS X.
+
+Vim is rock stable and is continuously being developed to become even better. Among its features are:
+
+    persistent, multi-level undo tree
+    extensive plugin system
+    support for hundreds of programming languages and file formats
+    powerful search and replace
+    integrates with many tools
+
+    Vim本身轻量级而功能强大，同时拥有大量插件，本身及插件完全支持自定义配置，“编辑器之神”当之无愧。
+    
+二、安装
+    Unix系统自带Vi，需要升级到Vim（Vi Improved）。vim-gnome和vim-gtk为主要窗口版本（窗口版本带剪贴板支持+clipboard），vim-tiny为tiny版本。
+    $sudo apt-get install vim-gnome
+    
+三、帮助
+    1、tutor：vimtutor（控制台版本）或gvimtutor（图形界面版本）阅读Vim教程；
+    2、help doc:  :h _subject_命令来访问。_subject_主题可以是命令，配置选项，热键绑定，插件等。使用:h命令（不带任何subject）来获取帮助系统的相关信息以及在不同的主题之间切换；
+    3、web
+    
+四、配置
+    安装后查看版本信息，包含配置文件说明：
+        $vim --version
+    主要修改配置文件～/.vim/vimrc（2nd user vimrc file）。vim中命令:echo $VIM回应$VIM。
+        系统配置文件$VIM/vimrc和示例配置文件$VIMRUNTIME/vimrc_example.vim
+    配置主要分全局配置（高亮、折行、自动对齐等）、UI配置（界面大小、字体、配色等）、插件配置（语言检错、自动补全等）。
+    主要设置语句有source\set\let\autocmd\
+    备份配置文件必要！
+    
+五、模式
+    1、Normal普通模式：通过命令操作
+        （Vim可通过vimrc中set mouse=a在gvim下使用鼠标，但是，你需要不使用鼠标！）
+        默认为Normal模式（可配置），：开头的命令会在底部命令行处显示，从其它模式按键<ESC>回到Normal；
+            vimrc中inoremap jk <ESC>设置jk映射<ESC>
+    2、Insert插入模式：编辑 i/I/a/A/o/O
+        命令i插入(insert)，a追加插入（append），I本行第一个非空字符处插入，A本行最后字符处追加，o/O（open）在本行下（below）/上（above）新开一行开始插入；
+            前置[count]次；
+            gI 在第一列开始插入[count]次；
+        CTRL-A 插入之前插入的文本;
+        CTRL-@ 类上并停止插入；
+        CTRL-W 删除光标前的单词；
+        CTRL-U 删除本行光标前所有键入（entered）的字符；
+    3、Visual可视化模式：可视化地选取文本进行操作
+        v/V/Ctrl-v
+            命令v是（character oriented），V是（line oriented），Ctrl-V是块可视化；
+
+前置参数[count]取值除数字外，+/-/1/$表示next/previous/first/last；
+
+六、移动
+    1、基本 ←↓↑→
+        h/j/k/l
+            前置参数<count>表示移动行/列数，默认为1；
+    2、行内光标 0/^/gE/B/ge/b/e/w/E/W/g_/$/|/t/T/f/F/；
+        0/^/gE/B/ge/b/e/w/E/W/g_/$
+        行首/第一个非空字符/上一个词尾/词头/词尾/下个词/最后非空字符/行尾；
+            g表示（previous），大写表示ignore punctuation，e表示ending，b表示beginning，w表示Word；
+            g0/g^/g$：对屏显行（screen line）的0/^/$；
+        | 本行第<count>列；
+        f{char} 向右到第[count]次{char}处(to the right)；
+        t{char} 类上，但(Till before)到{char}之前；
+        F{char} T{char} 类上，但向左(to the left)；
+        ; 重复上次f/t/F/T [count]次；
+            , 类上，但反向；
+    3、窗口卷动（Scroll window） <C-e/d/f/y/u/b>/z<CR>/zt/z./zz/z-/zb
+        向下（Downwards）：<C-e>一行，<C-d>半页，<C-f>一页（或<S-Down>/<Pagedown>），z+刷新显示一页；
+        向上（Upwards）：<C-y>一行，<C-u>半页，<C-b>一页（或<S-Up>/<Pageup>），z^刷新显示；
+            这两种方式均可前置参数<count>表示：移动的行数/行数/页数/<count>行移至页首/移至页尾再将页首行移至页尾；
+        相对光标（Relative to cursor）：z<CR>光标行移至页首，zt类z<CR>但光标保持同一列，z{height}<CR>重绘窗口为{height}行，z.光标行居中，zz类z.但光标同列，z-刷新显示光标行为页尾，zb类z-但光标同列；
+            除z{height}<CR>外均可前置参数<count>表示操作行行号，即无<count>时默认光标行；
+        水平（Horizontally[only works when wrap is off]）：zl/z<Right>向右<count>个字符，zh/z<Left>向左<count>个字符，zL向右半屏，zH向左半屏，zs光标处移至屏始，ze光标处移至屏末；
+        同步（Synchronously）：多窗口同步卷动；
+        鼠标（Mousewheel）
+    4、行移动（作为Motions） -/+/G/gg
+        -/+ 上/下移<count>行并光标移到第一非空字符，默认一行；
+        G/gg 移动到<count>行并光标移到第一非空字符，默认末/首行；
+        :[range] 光标移到[range]中最后数字行；
+        {count}% 移动到{count}%的行；
+        gj/gk 在结合操作符或折行时与j/k效果有不同；
+    5、文本结构化移动（Text object Motions） (/)/{/}/]]/][/[]/[[
+        (/) 向后（backward）/前（Forward）<count>句（sentences）；
+        {/} 向后/前<count>段落（paragraphs）；
+        ]] 向前[count]区域（sections)或下一个在第一列的'{'；
+        ][ 类上，但'}'；
+        [] 类上，但向后'{'；
+        [[ 类上，但'}'；
+    6、其余各种（Various Motions） H/M/L/%/[(
+        H/M/L 屏首行Home，屏中行Middle，屏末行Last;
+            <count>H/L屏首/末起第<count>行；
+        % 找到本行光标处或之后的item并跳到它的匹配match，item包括([{}]) /* */ #if #ifdef #else #elif #endif；
+        [( 找到前previous[count]个未匹配的"("；
+        [{ 类上，但"{"；
+        ]) 类上，但后next，")"；
+        ]} 类上，但"}"；
+        [m [# [* [/ 等参见motion.txt various motions；
+
+七、文本操作
+    1、删除Delete x/X/d/D/dd/J/gJ
+        x/X 删除光标处开始向后/前开始向前字符;
+        dd 删除行；
+        D 删除光标处到行尾；
+            4个均可前置<count>参数表示删除的字符/行数；
+        d{motion} 删除光标处到{motion}命令所指处字符；（如d$删除光标处到行末字符）
+            5个均可前置指定寄存器；
+        {Visual}["x]x 删除高亮文本[到寄存器x]，{Visual}["x]d 同；
+        {Visual}["x]X 删除行，D同；
+        :[range]d[elete] [x] 删除[range]指定行[到寄存器x]；
+        :[range]d[elete] [x] {count} 删除从[range]行开始{count}行[到寄存器x]；
+        J 删除行间（Join lines，删除的通常是<LF>，链接当前行及后面的行，参数<count>)；
+        gJ 类J但不插入或移除空格；
+    2、拷贝/移动copying/moving
+        寄存器（registers）有{a-z A-Z 0-9 . % # : - "}，用于下一次删除、复制、粘贴；
+            {. % # :}只用于粘贴；
+            ：reg[isters] [{arg}]显示[{arg}提到的]编号或命名的寄存器的内容；
+            ：di[splay] [{arg}]同reg；
+            寄存器分10类：1、Unnamed未命名"" 用于未指定寄存器的粘贴p/P,内容来源命令d/c/s/x/y，总是自动获取内容；
+                        2、Numbered编号"0 to "9 0从上个yank获取内容，1从上个delete/change获取并不断向2-9传递，9不断丢弃（一行内删/改不含），命令指定寄存器时不获取；
+                        3、Small delete寄存器"- 一行内删时获取，指定寄存器时不获取；
+                        4、Named命令"a to "z or "A to "Z 用于指定寄存器，小写表示替换，大写追加；
+                        5、Read-only只读". "% ": .内容为上次插入的文本，%为当前文件名，:为最近执行的命令；
+                        6、Alternate file交替文件"# 为当前窗口的交替文件名；
+                        7、Expression表达式"= 不存储，只用于执行需要寄存器的命令的执行；
+                        8、Selection and Drop选择及拖拽"* "+ "~ 存取GUI选择的文本，与外部应用交互；
+                        9、Black hole黑洞"_ 不存储，用于删除干净且不影响其他寄存器；
+                        10、Last search pattern上一搜索模式"/ 存储上一搜索模式；
+        复制/粘贴（put/yank） y/yy/Y/p/P/gp/]p
+            ["x]y{motion} 复制光标处到{motion}命令所指处字符[到寄存器x]；
+            ["x]yy 复制<count>行[到寄存器x]；
+            ["x]Y 同yy；
+            {Visual}["x]y 复制高亮文本[到寄存器x]；
+            {Visual}["x]Y 复制高亮行[到寄存器x]；
+            :[range]y[ank] [x] 复制[range]行[到寄存器x]；
+            :[range]y[ank] [x] {count} 复制{count}行[到寄存器x]，从[range]中最后一个行号行开始；        
+            ["x]p 将[寄存器x中]文本粘贴到光标后<count>次；P表示光标前；
+            gp 类p但粘贴后光标移至文本后，gP 类P；
+            ]p 类p但粘贴后调整当前行对齐，[p/[P/]P 类P但调整对齐；
+            :[line]pu[t] [x]粘贴[寄存器x中]文本到[line]后，默认当前行后，行操作（linewise）；
+            :[line]pu[t]! [x]类但粘贴到前；
+        :[range]co[py] {address}复制[range]给定行到{address}行下；
+        :t 同copy；
+        :[range]m[ove] {address}移动[range]给定行到{address}行下；
+    3、撤销/重做Undo/Redo u/<C-r>/U/g-/g+
+        u 撤销<count>个修改；
+        <C-r> 重做<count>个修改；
+        U 撤销最近一次修改所在行的所有最近修改，注意改命令本身也被看做一次修改；
+        g-/g+ 跳到较早older/较晚newer的文件状态[<count>次]，undo/redo不被看做文件状态改变；
+            :undol[ist] 列出撤销树的叶子（撤销为支branch，撤销后修改形成新支，进而构成撤销树）；
+            :earlier {count} 同<count>g- ， :later {count} 同<count>g+ ；
+            :earlier {N}s/m/h/d/f 跳到大约about{N}秒/分/时/天/写文件前older文件状态；
+            :later {N}s/m/h/d/f 类上，但后newer文件状态；
+            :wundo[!] {file} 写撤销历史Undo history到文件{file}，[!]强制写；
+            :rundo {file} 读撤销历史从文件{file}；
+    4、重复Repeat ./q/@ （用到宏Macro）
+        . 重复上次改变（change），不用于命令行命令（command-line command）；
+        @: 重复上一命令行[count]次；
+        q{0-9 a-z A-Z "} 录制宏到寄存器，再次 q 结束录制，大写表示追加录制；
+        @{0-9 a-z " . = * +} 执行寄存器的宏内容，主要 = 寄存器执行表达式结果；
+        @@ 重复上一宏执行（@{0-9 a-z " : *})[count]次；
+            :[addr]@{0-9 a-z " . = * +} [在addr处]以命令行命令Ex command（即 : 命令）执行宏；
+            :[addr]@: [在addr处]重复上一命令行（command-line）；
+            :[addr]@@ [在addr处]重复上一 :@{0-9 a-z "} ；
+    5、搜索Search //?/n/N/*/#
+        /{pattern}[/]<CR> 向前（Forward）搜索第[count]个{pattern}；
+        /{pattern}/{offset}<CR> 类上并跳到{offset}行；
+        /<CR> 向前搜索第[count]个最近搜索Last-pattern并跳到最近使用的{offset}行；
+        //{offset}<CR> 类上但使用新的{offset}；
+        ?{pattern}[/]<CR> ?{pattern}/{offset}<CR> /<CR> //{offset}<CR> 向后搜索（backward）；
+        n 重复上个 /或? [count]次；
+        N 类n但方向相反；
+        * 向前forward搜索第[count]个光标最近的词word；
+        # 类*但方向向后backward；
+        g* 类*但可搜索到不是完整单词的匹配；
+        g# 类g*但backward；
+            gd 跳到本地定义Goto local Declaration when the cursor is on a local variable；
+            gD 类gd但global；
+    6、替换Replace更改Change换用Substitute r/R/c/C/s/S
+        r 替换光标处字符；
+        R 从光标处开始进入替换模式；
+        ["x]c{motion} 删除{motion}所指文本[到寄存器x]并开始插入；
+            ["x]cc 删除[count]行[到寄存器x]并开始插入；
+        ["x]C 删除光标处到行末[再删除count-1行][到寄存器x]并开始插入；
+        ["x]s 删除[count]字符[到寄存器x]并开始插入；
+        ["x]S 同 cc ；
+    7、大小写Case ~/g~/gU/gu
+        ~ 转换Switch case并光标后移；
+        g~{motion} 转换{motion}文本；
+        g~~/g~g~ 转换当前行；
+        gU{motion} 转换{Motion}文本大写；
+        gUU/gUgU 转换当前行大写；
+        {Visual}U 转换高亮文本大写；
+        gu{motion} guu/gugu {Visual}u 类上但小写；
+    8、加减Add and Subtract  CTRL-A/CTRL-X
+        CTRL-A 加[count]到光标处或之后的数字或文字字符（number or alphabetic character)；
+        {Visual}CTRL-A 加[count]到高亮文本中的数字;
+        {Visual}g CTRL-A 类上但如果有多行则递归加（可形成递增数列）；
+        CTRL-X 减；
+    9、缩进Shift </>
+        <{motion} 向左缩进{motion}行一个"shiftwidth"；
+        << 向左缩进[count]行一个"shiftwidth"；
+        {Visual}[count]< 向左缩进高亮行[count]个"shiftwidth";
+        >{motion} >> {Visual}[count]> 类上但向右；
+        :[range]< 向左缩进[range]行一个"shiftwidth";
+    10、调整格式Format :ce/:ri/:le/gq/gw/=
+        :[range]le[ft] [indent] 左对齐[range]行；
+        :[range]ri[ght] [width] 在[width】列处右对齐[range]行；
+        :[range]ce[nter] [width] 在[width]宽度下对[range]行居中对齐；
+        gq{motion} 将{motion}经过的行调整格式，与"textwidth"有关；
+        gqq 调整[count]行；
+        {Visual}gq 调整高亮行；
+        gw{motion} {Visual}gw gww 类gq但光标位置不变；
+        ={motion} 过滤{motion}行，默认自动对齐；过滤Filter是接受文本作为标准输入后进行处理最后标准输出的程序；
+        == 过滤[count]行；
+        {Visual)= 过滤高亮行；
+    11、文本结构选取（Text Object Selection） iw/is/ip/a{
+        aw 选取[count]个词（a word），含空格（Leading or trailing spaces included）；
+        iw 类上，但inner word；
+        aW 类上，但a WORD；iW；
+        as 类上，但sentence；is；
+        ap 类上，但paragraph；ip；
+        a]/a[ 类上，但选取'[ ]'块（找到第[count]个'['再找到它的匹配，选取之间文本），含'[' ']'符号；i]/i[；
+        a)/a(/ab 类上，但选取'( )'块，a block；i)/i(/ib；
+        a}/a{/aB 类上，但选取'{ }'块，a Block；i}/i{/iB；
+        a>/a< 类上，但选取'< >'块；i>/i<；
+        at/it 类上，但选取tag块；
+        a"/a'/a` 选取行内引用间的文本，含符号 " ' ` ；i"/i'/i` 不含符号；
+
+[+cmd] 用于给定光标在新打开文件中的位置或执行其他命令；
+[++opt] 用于
+八、存取文件
+    1、Edit a file :f/:e/:enew/CTRL-^/:gf
+        CTRL-G /:f[ile] 显示当前文件名、光标位置、文件状态；
+        :f[ile]! 类上，但! 表示不缩减信息；
+        {count}CTRL-G 类CTRL-G，但给全路径及文件名，{count}大于1时给出当前buffer号；
+        g CTRL-G 给出光标信息：列、行、词、字符、比特；
+        :f[ile][!] {name} 设置当前文件名为{name}，! 避免缩减信息；
+        :buffers /:files /:ls 列出所有已知文件名；
+        :e[dit][!] [++opt] [+cmd] 编辑当前文件（重载），! 忽略当前buffer的更改；
+        :e[dit][!] [++opt] [+cmd] {file} 类上，但编辑文件{file}；
+        :ene[w][!] 编辑一个新的未命名的buffer，! 表示不考虑当前buffer是否已更改；
+        :fin[d][!] [++opt] [+cmd] {file} 在'path'中查找文件{file}并编辑[第[count]个匹配的文件]；
+        :CTRL-^ 编辑alternate file，通常the previous edited file 就是the alternate file；
+        :{count}CTRL-^ 编辑buffer list中的第{Count}个文件；
+        :e #[count] 类上，但当buffer没有file name时命令失效；
+        :[count]gf 跳到光标处后之后的[第[count]个文件]编辑，Mnemonic:"goto file"；
+    2、argument list  :args/:argd/:wn/:wN/:wp
+        打开vim时给出多个文件作为编辑项目，即形成argument list；
+        :ar[gs] 列出项目表，当前文件'[ ]'标出；
+        :[count]arga[dd] {name}.. 添加{name}s 文件项目到argument list[到[count]个项目后]；
+        :argd[elete] {pattern}.. 删除argument list中匹配{pattern}的argument；
+        :[range]argd[elete] 删除argument list中[range]的argument；
+        :[count]n[ext][!] [++opt] [+cmd] 编辑第[count]个next file，! 忽略修改；
+        :[count]N[ext][!] [++opt] [+cmd] 类上，但编辑第[count]个previous file；
+        :[count]prev[ious] [++opt] [+cmd] 同上；
+        :[count]wn[ext] [++opt] [file] 写入当前文件[为{file}]并开始编辑第[count]个next file；
+        :[count]wN[ext] [++opt] [file] 类上，但previous file；
+        :[count]wp[ext] [++opt] [file] 同上；
+    3、Writing and Quiting :w/:q/:wq/ZZ/:x/:xa
+        :w[rite] [++opt] [file] 写入buffer到文件[file]；
+        :[range]w[rite] [++opt] >> [file] 追加[range]行到文件[file]；
+        :[range]w[rite] [++opt] !{cmd} 以[range]行作为标准输入standard input执行{cmd}；
+        :sav[eas][!] [++opt] {file} 保持当前buffer为文件{file}并更改当前buffer文件名为{file}，之前名字用作alternate file；
+        :[range]up[date][!] [++opt] [>>] [file] 类:w，但仅当buffer已更改时生效；
+        :wa[!] 写入所有buffer到文件，注意对未命名buffer无效；
+        :q[uit] 退出窗口，离开编辑；
+        :wq[!] [++opt] [file] 保存为[file]并退出，! 表示忽略更改；
+        :[range]wq[!] [++opt] [file] 类上，但只写入[range]行；
+        :ZZ 退出编辑，如果已更改则写入文件；
+        :x 同上；
+        :ZQ 同:q! ；
+        :qa[ll][!] 退出所有编辑；
+        :xa[ll] 类上，但检查已更改则写入；
+
+九、页面Tabs 缓存Buffers 窗口Windows
+    官方doc说明：
+        Summary:
+        A buffer is the in-memory text of a file.
+        A window is a viewport on a buffer.
+        A tab page is a collection of windows.
+    页面含一个或多个窗口，窗口显示一个缓存的某一视点；
+    Windows:
+        打开新窗口： CTRL-W s/v
+            CTRL-W s /CTRL-W /:[N]sp[lit] [++opt] [+cmd] [file] 打开新窗口，编辑当前文件或[file]，水平分屏,N行高；
+            CTRL-W v /:[N]vs[plit] [++opt] [+cmd] [file] 类上，但垂直分屏；
+            CTRL-W n /:[N]new [++opt] [+cmd] 打开新窗口，编辑空文件，水平分屏，N行高；
+            :[N]vne[w] [++opt] [+cmd] 类上，但垂直分屏；
+            :[N]sv[iew] [++opt] [+cmd] {file} 只读分屏；
+            :[N]sf[ind] [++opt] [+cmd] {file} 在'path'中查找文件并分屏显示；
+        关闭窗口： :q/:close/:only
+            :q[uit] /:{count}q[uit] /CTRL-W q 关闭当前窗口或{count}窗口；
+            :clo[se][!] /:{count}clo[se][!] /CTRL-W c 关闭第{count}窗口（到后台状态h(hidden)或到同一buffer的不同viewpoint窗口，更改不写入也不会丢失的安全型关闭命令）；
+            :hid[e] /:{count}hid[e] 类上；
+            :on[ly][!] /:{count}on[l][!] /CTRL-W o 关闭{count}外所有窗口,自动写入，不丢失更改；
+        窗口间光标移动： CTRL-W j/k/h/l/w/p
+            CTRL-W j 移动光标到下方below第N个窗口；
+            CTRL-W k/h/l 类上，但上方above/左left/右right；
+            CTRL-W w 移动光标到下/右方窗口或上左那个窗口；
+            CTRL-W W 类上，但上/左或下右那个；
+            CTRL-W t 移动光标到上左（top-left)那个窗口；
+            CTRL-W b 类上，但（bottom-right);
+            CTRL-W p 移动光标到前一个（previous)窗口；
+        窗口调整： CTRL-W r/H/J/K/L/=
+            CTRL-W r 将同一行的窗口向右rightwards旋转调序/将同一列的窗口向下downwards旋转调序（rotate）；
+            CTRL-W R 类上，但向左leftwards/向上upwards；
+            CTRL-W K 将当前窗口在最上（the very top）展开，调整为上下分屏；
+            CTRL-W J/H/L 类上，但最下（the very bottom）/最左（the far left）/最右（the far right）;
+            CTRL-W T 在新页面打开当前窗口,在第[count]个页面之前打开页面；
+            CTRL-W - /:res[ize] -N 当前窗口高度减N;
+            CTRL-W + /:res[ize] +N 类上，但加；
+            CTRL-W _ /:res[ize] N 设置当前窗口高度为N；
+            CTRL-W < 当前窗口宽度减N；
+            CTRL-W > 类上，但加；
+            CTRL-w | /:vertical res[ize] [N] 设置窗口宽度为N；
+    Tabs:
+        打开页面： :tabe/:tabn/:tabp
+            :[count]tabe[dit] [++opt] [+cmd] [file] /:[count]tabnew [++opt] [+cmd] [file] 在[count]页面后新开页面，[file】编辑窗口或含空窗口； 
+            :[count]tabf[ind] [++opt] [+cmd] [file] 在'path'中查找文件[file]并在[count]页面后打开页面编辑；
+            :tabn[ext] {count} /{count}gt 到{count}页面；
+            :tabp[revious] /:tabN[ext] /gT 到前一（previous）页面；
+            :tabp[revious] {count} /:tabN[ext] {count} /{count}gT 回退{count}个页面；
+            :tabr[ewind] /:tabfir[st] 到第一个页面；
+            :tabl[ast] 到最后一个页面；
+            :tabs 列出页面及其所含窗口，">"表示当前窗口，"+"表示已更改的buffer；
+        调整：
+            :tabm[ove] [N] /:[N]tabm[ove] 移动当前页面到页面N之后，默认最后；
+            :tabm[ove] +/-[N] 右/左移当前页面[N]个页面；
+    Buffers: :ls/:bd/:bun
+        :files[!] [flags] /:buffers[!] [flags] /:ls[!] [flags] 显示所有buffers，! 列出unlisted-buffer(用于help file/file name/marks)；
+            列表项包括buffer号、提示符、文件名、位置，提示符有u/%/#/a/h/-/=/+/x表示未列出/当前窗口/交替buffer/活动active/隐藏hidden/不可修改with 'modifiable' off/只读/已更改/出现读错误；
+            [flags]项通过提示符限制列出的规则； 
+        :[N]bd[elete][!] /:bd[elete][!] [N] 卸下unload buffer [N]并将其从buffer list删除，[!]忽略修改；
+        :bdelete[!] {bufname} 同上，但用name指定而非buffer号；
+        :N,Mbdelete[!] 类上，但对N到M范围的所有buffer执行；
+        :[N]bun[load][!] /:bun[load][!] [N] 类 :bd 但只unload；
+        :bunload[!] {bufname} /:N,Mbunload[!] 
+        :sb[uffer] [+cmd] [N] /:sb[uffer] [+cmd] {bufname} 分屏显示buffer list中的buffer N 并编辑；
+        :bn[ext] 到buffer list中的下一个buffer；
+        :bN[ext] /:bp[revious] 类上，但上一个previous；
+        :br[ewind] /:bf[irst] 类上，但到第一个；
+        :bl[ast] 类上，但最后一个；
+        :unh[ide] 重规划屏幕来为每一个buffer list中的加载loaded的buffer打开一个窗口；
+        :ba[ll] 类上，但对于所有buffer；
+
+        Marks
+
+
+        
+        
+        

@@ -1,0 +1,85 @@
+#==============================================================
+#     The Text Introduce Some Awesome Vim Plugins
+#==============================================================
+
+#The website vimawesome.com is a reference.
+#Plugins below is to be added except for special noted ones.
+
+#=============================
+#   General
+#=============================
+vundle
+    vim-plugin management   运用git插件管理
+The Nerd tree
+    Tree explorer   目录树导航
+Syntastic
+    syntax checking hacks   静态语法及风格检查
+vim-colors-solarized =====alternative
+    precision color scheme  主题solarized
+ctrlp.vim
+    fuzzy file,buffer,tag,etc finder    检索
+identline
+    display the indention levels    缩进级竖线提示
+Tagbar
+    display tags,ordered by scope   tag导航 
+taglist
+    display tags
+youcompleteme
+    code-completion engine  代码自动补全
+rainbow_parentheses.vim
+    括号高亮
+vim-trailing-whitespace
+    red the space at the eol    代码行末的空格标红
+vim-easymotion
+    光标跳转
+vim-powerline =====alternative
+    status line     状态栏,类似很多
+minibufexpl.vim =====alternative
+    buffer management   buffer管理,同类很多
+surround.vim =====alternative
+    =====included in youcompleteme
+    quoting/parenthesizing  加环绕符号(如引号)
+Tabular =====alternative
+    text filtering and alignment    代码格式,对齐
+SuperTab =====alternative
+    perform all vim insert mode completions with tab
+vim-multiple-cursors =====alternative
+    multiple selections     多光标操作
+TaskList.vim
+    TODO list explorer  查看和跳转TODO列表
+
+
+#=============================
+#   Git
+#=============================
+fugitive.vim
+    git wrapper 针对Git
+
+#=============================
+#   Mark Down
+#=============================
+vim.-markdown
+
+
+#=============================
+#   Python
+#=============================
+pyflakes-vim
+    syntax fly-check(instant check)  动态语法检查
+python-syntax
+    python.vim语法高亮
+
+
+#=============================
+#   Java
+#=============================
+vim-java
+
+
+#=============================
+#   C
+#=============================
+
+
+
+#

@@ -1,0 +1,203 @@
+一、Git简介
+	官方网站：https://git-scm.com/
+	参考：图解GIT：https://marklodato.github.io/visual-git-guide/index-zh-cn.html#rebase
+	
+	Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.It's under the GPL.
+	
+	The GNU General Public License (GNU GPL or GPL) is a widely used free software license, which guarantees end users (individuals, organizations, companies) the freedoms to run, study, share (copy), and modify the software.GNU is short for "GNU's not Unix".See "GNU project".
+	
+	(GitHub is a web-based Git repository hosting service. It offers all of the distributed revision control and source code management (SCM) functionality of Git as well as adding its own features. Unlike Git, which is strictly a command-line tool, GitHub provides a Web-based graphical interface and desktop as well as mobile integration. It also provides access control and several collaboration features such as bug tracking, feature requests, task management, and wikis for every project.GitHub offers both plans for private repositories and free accounts,which are usually used to host open-source software projects.)
+	
+	
+二、安装Git
+	1、Windows
+		安装msysgit（https://git-for-windows.github.io），开始菜单->“Git”->“Git Bash”，进入类命令行窗口，安装并打开完毕；
+		
+	2、Linux
+		Debian或Ubuntu Linux命令：$sudo apt-get install git
+		其它可以直接通过源码安装：先从Git官网下载源码，然后解压，依次输入命令：./config，make，sudo make install
+		
+	3、初始化关联github账户
+		命令：
+		$ git config --global user.name "Your Name"
+		$ git config --global user.email "email@example.com"
+		--global参数表示这台机器上所有的Git仓库都会使用这个配置
+		
+		
+三、创建版本库及文件提交
+	1、版本库即repository，里面的所有文件都可以被Git管理，每个文件的新建、修改、删除，Git都能跟踪和控制；
+	
+	2、使用命令：mkdir建立目录或cd已有目录作为工作目录；
+		$git init创建初始化为git repository（自动建立.git目录）；
+		工作目录与版本库独立，版本库.git目录下有index或stage目录即缓冲区和自动创建的主分支master以及指向当前commit的指针HEAD；
+		文件内容并没有真正存储在索引(.git/index)或者提交对象中，而是以blob的形式分别存储在数据库中(.git/objects)，并用SHA-1值来校验。索引文件用识别码列出相关的blob文件以及别的数据。对于提交来说，以树(tree)的形式存储，同样用对应的哈希值识别。树对应着工作目录中的文件夹，树中包含的树或者blob对象对应着相应的子目录和文件。每次提交都存储下它的上一级树的识别码。
+		
+	3、$git add <file>：添加需要追踪的新文件和待提交的更改到缓存区（参数.：递归添加）；
+		$git commit <file>：提交文件（参数-m "<message>"：附带提交说明，提交后缓冲区空）；
+	
+	
+四、版本控制
+	1、版本查看
+		$git status：查看repository状态（参数-s：简短显示，分已添加和工作目录下两个情况）；
+		$git diff：查看repository的具体变化（通过Unix通用的diff格式显示，git只能辨识文本文件内容）；
+			（默认为未缓存的[通过add]变化，参数--cached：已缓存的变化，--HEAD：与提交的变化即所有变化）
+	
+	2、版本变更
+		$git log：显示从最近到最远的提交日志（--pretty=oneline参数：按行显示版本号及提交说明）；
+		$git reflog：显示从最近到最远的local repository update日志（按行显示版本号、版本、update说明）；
+		$git reset --hard commit_id：变更版本到版本号所指版本（参数--hard：）
+		（git使用指针HEAD指向当前版本，HEAD@{N}：前N个版本，HEAD^：上一版本，HEAD~N：前N个版本）
+		（commit_id即版本号，通过SHA1计算得到校验HASH，版本号只需输入几位足以辨别即可）
+	
+	3、撤销及删除
+		$git checkout -- <file>：撤销工作区修改；
+		（checkout原理是用版本库文件替换工作区文件，所以可以从版本库找回误删的工作区文件）；
+		$git reset HEAD -- <file>：撤销某文件的缓存；
+		$git rm <file>：从缓存及工作目录删除文件（参数--cached：只删除缓存的文件）；
+
+		
+五、远程仓库
+	1、github就是一个远程repository，Git支持SSH协议，在Github里“Add SSH Key”以识别你的推送；
+		（在用户主目录下的.ssh目录查找SSH Key的秘钥对文件id_rsa（私钥）和id_rsa.pub（公钥）
+		Github需要公钥
+		创建SSH Key：打开Shell（Windows下打开Git Bash），命令
+			$ ssh-keygen -t rsa -C "youremail@example.com"
+		）
+	
+	2、添加远程库
+		要关联一个远程库，使用命令$git remote add origin git@server-name:path/repo-name.git；
+		$git remote add [-t <branch>] [-m <master>] [-f] [--[no-]tags] [--mirror=<fetch|push>] <name> <url>
+		（Adds a remote named <name> for the repository at <url>. The command git fetch <name> can then be used to create and update remote-tracking branches <name>/<branch>）
+	
+		$git fetch从远端仓库下载新分支与数据。
+		与远端仓库同步，提取本地所没有的数据，为同步时的该远端的每一分支提供书签，这些分支叫做“远端分支”。
+		Git 不允许检出（切换到该分支），但可合并到当前分支、与其他分支作比较差异、查看分支的历史日志等。
+		
+		$git pull命令基本是在 git fetch 之后紧接着 git merge 远端分支到你所在的任意分支。
+		
+		关联后，使用命令$git push -u origin master第一次推送master分支的所有内容；
+		（-u，--set-upstream：For every branch that is up to date or successfully pushed, add upstream (tracking) reference, used by argument-less git-pull[1] and other commands. ）
+		
+		$git push [alias] [branch]命令推送你的新分支与数据到某个远端仓库		
+		
+		SSH连接在第一次验证GitHub服务器的Key时，需要确认GitHub的Key的指纹信息是否真的来自GitHub的服务器
+	
+	3、克隆远程库
+		要克隆一个仓库，使用$git clone [url]（git@github.com:用户名/repo名.git）
+		
+		Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快
+	
+	
+六、分支管理
+	1、Git鼓励使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果相同，但过程更安全	
+		新分支创建后，分支切换就是指针HEAD移动；
+		
+		查看分支：$git branch
+		
+		创建分支：$git branch <name>		
+		
+		切换分支：$git checkout <name>
+		
+		创建+切换分支：$git checkout -b <name>	（-B：强制创建并切换，通常用于已有同名分支时，会覆盖）
+		
+		合并某分支到当前分支：$git merge <name>
+			（默认为fast forward模式合并，会删除被合并的分支，参数--no-ff禁用ff模式以保留分支）
+		
+		删除分支：$git branch -d <name>	（参数-D：强制）
+
+	2、当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交、合并；
+
+		用$git log --graph命令可以看到分支合并图；
+	
+		Git用<<<<<<<，=======，>>>>>>>标记出不同分支的内容
+		
+	3、储藏Stashing：在需要离开当前分支而无法commit已做工作时（比如需要先去处理其它分支的bug）
+		$git stash：储藏当前工作区文件到堆栈
+		
+		$git stash list：列表显示当前的储藏
+		
+		$git stash apply：应用储藏（恢复到工作区）
+		
+		$git stash drop：删除栈中的储藏
+		
+		$git stash pop：出栈储藏并应用（即应用并删除）
+		
+	4、	$git remote -v：查看远程库信息
+	
+		$git push origin branch-name：从本地推送分支
+		
+		$git checkout -b branch-name origin/branch-name：在本地创建和远程分支对应的分支
+		
+		$git branch --set-upstream branch-name origin/branch-name：建立本地分支和远程分支的关联
+		
+		如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并，如果合并有冲突，则解决冲突，并在本地提交git push
+		
+七、标签管理
+	$git tag：查看标签
+	$git tag <tagname> <commit>：给commit（默认为HEAD）创建标签
+		（参数-a/-s：未签名的/使用GPG签名的注释标签，-m <msg>：标签注释，
+			即$git tag -a <tagname> -m "msg"
+		-f：强制创建并覆盖，-d：删除标签，-v：识别标签的GPG签名）
+		
+八、Github使用
+	Fork开源库，再clone到本地自主开发，可pull request给原库申请贡献代码
+
+九、自定义Git
+	当前用户的Git配置文件放在用户主目录下的一个隐藏文件.gitconfig中
+	每个仓库的Git配置文件都放在.git/config文件中
+	参数--global：对当前用户的全局
+	1、自定义配置
+		$git config --help：参看man页
+		
+		$ git config --global color.ui true：打开所有的默认终端着色
+			（true默认着色，false意味着不为输出着色，而always则表明在任何情况下都要着色）
+		具体到哪些命令输出需要被着色以及怎样着色，如下：
+			$ git config --global color.diff.meta "blue black bold"：让diff输出的改变信息以粗体、蓝色前景和黑色背景的形式显示
+		
+		core.autocrlf：Windows使用回车和换行（CRLF）两个字符来结束一行，而Mac和Linux只使用换行（LF）一个字符
+			$ git config --global core.autocrlf true/input：
+			在Windows系统上，把它设置成true，提交时自动地把行结束符CRLF转换成LF，当签出代码时，LF会被转换成CRLF
+			在Mac和Linux系统上，设置成input，在提交时把CRLF转换成LF，签出时不转换，仓库中保留LF。
+			
+	2、忽略文件（即Git忽略管理某些文件）
+		.gitignore文件：忽略的规则的配置文件，配置参考https://github.com/github/gitignore
+			通常的忽略文件的原则是：
+				忽略操作系统自动生成的文件；
+				忽略通过另一个文件自动生成的文件；
+				忽略用户自定义的文件（如含有敏感信息的配置文件）
+		
+		$git check—ignore：Debug gitignore / exclude files
+	
+	3、别名alias
+		$git config alias.<alias> <command>：为<command>设置别名为<alias>
+		也可直接修改配置文件中[alias]部分
+		
+	4、搭建Git服务器
+		需要准备一台运行Linux的机器作服务器，强烈推荐用Ubuntu或Debian，可以通过几条简单的apt命令就可以完成安装：
+		假设你已经有sudo权限的用户账号，下面，正式开始安装。
+		第一步，安装git：
+		$ sudo apt-get install git
+
+		第二步，创建一个git用户，用来运行git服务：
+		$ sudo adduser git
+		
+		第三步，创建证书登录：
+		收集所有需要登录的用户的公钥（id_rsa.pub文件），把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。
+		
+		第四步，初始化Git仓库：		
+		先选定一个目录作为Git仓库，假定是/srv/sample.git，在/srv目录下输入命令：	
+		$ sudo git init --bare sample.git
+		Git就会创建一个裸仓库，裸仓库没有工作区，因为服务器上的Git仓库纯粹是为了共享，所以不让用户直接登录到服务器上去改工作区，并且服务器上的Git仓库通常都以.git结尾。然后，把owner改为git：		
+		$ sudo chown -R git:git sample.git
+		
+		第五步，禁用shell登录：		
+		出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。找到类似下面的一行：	
+		git:x:1001:1001:,,,:/home/git:/bin/bash		
+		改为：	
+		git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell	
+		这样，git用户可以正常通过ssh使用git，但无法登录shell，因为我们为git用户指定的git-shell每次一登录就自动退出。
+		
+		第六步，克隆远程仓库：		
+		在各用户机上运行：		
+		$ git clone git@server:/srv/sample.git
+		

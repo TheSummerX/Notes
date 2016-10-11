@@ -1,0 +1,169 @@
+Day One
+	一、linux诞生
+		1、1973，Unix，开源；
+		2、minix->Linux(Linus Torvalds),专用机到PC，1994v1.0发布；
+		3、"linux is not unix";
+		4、免费开源、多线程多用户、安全、内存与文件管理优越、体积小。
+	二、基本使用
+		1、启动提示信息：
+			在Linux系统的设备特殊文件目录/dev/下，终端设备文件
+			终端tty（teletypewriters,电传打字机，用于阅读和发送信息，现指终端，即能获得、发出、显示信息的设备）
+			tty1-6是文本型控制台,tty7是x-window(图形)控制台
+			登录模式为文本时，系统默认运行tty1，命令startx进入X window界面；
+			任何情况（包括登录模式为图形时）使用ctrl+alt+(f1-f7键)切换到对应的登录控制台
+			GNOME和KDE是基于X Window的经过不同组织进行整合之后的桌面环境，需要通过X Window运行
+			shutdown -h/r now立即关机、重启
+			reboot立即重启
+		2、/：根目录	root：root用户目录	home：其他用户目录	bin、sbin：用户、系统程序命令目录	dev：设备	etc：系统设置与管理	mnt：文件系统挂载（光驱等）	proc：目前系统核心与程序信息	usr：用户命令与程序	var：变动性质的程序、文件；
+			pwd显示当前目录	
+			cd改变目录	
+			ls显示当前目录下的文件和目录（-a参数显示所有文件，-l参数显示具体信息[十位属性、连接的文件数、用户、组、大小、最后修改日期、文件或目录名]）	
+			mkdir建立目录	rmdir删除目录	
+			touch建立空文件	
+			cp拷贝	
+			mv移动或重命名	
+			rm删除	
+			cat查看或连接多文件	
+			ln连接（-s软连接；连接保持多个相同文件同步，软连接的目的文件只是镜像可节省存储空间）
+			find 目录 查找类型 查找内容：查找文件及目录（查找类型（必须）为：-name按名称，-atime -1按存取1小时内，-cmin +10按更改10分钟前，-size +1k按大小为1k）
+		3、useradd添加用户（-g参数添加到指定组）	
+			passwd 用户名：设定或修改用户密码	
+			userdel 用户名：删除用户（-r参数删除用户文件和目录）
+		4、|管道命令（将管道前命令的处理结果输送给管道后的命令处理）	
+			重定向命令（>将前的结果覆盖写入后的文件；>>将前的结果追加写入后的文件；<从文件输入信息）	
+			less带分页显示文件内容（便于查看，非立即全部加载可提升速度）	
+			grep 内容 文件名：查找文件内容；
+		5、linux文件均具有所有者、所在组和其他组的权限属性。文件属性共十位说明：第1位文件类型（-表示普通文件，d目录directory，l连接），后每3位一个组，r或4表示read，w或2表示write，x或1表示执行。
+			ls -ahl查看所有者或所在组信息，
+			chown 用户名 文件名：更改文件所有者；
+			chgrp 组名 文件名：修改文件所在组；
+			groupadd添加组，/etc/group记录组信息，/etc/passwd记录用户信息；
+			chmod 属性号 文件名或目录：更改文件或目录的权限属性（例chmod 777 a为使a文件属性为所有者、所在组、其他组都可读写执行）；
+			usermod -g 组名 用户名：更改用户所在组。
+
+Day Two
+	一、安装jdk（创建iso并挂载，执行bin，同意条款，修改环境配置文件）
+	二、文件挂载
+		1、mount [-t vfstype] [-o options] device dir
+		2、umount device或umont dir
+		3、首先创建iso并加载或接上移动硬盘等dev，然后创建目录dir（mkdir命令），最后mount挂载、umount卸载。
+	三、etc/profile（环境配置文件）（#注释）
+	四、归档和压缩、解压文件
+		1、常用压缩工具：gzip/gunzip	.gz;	bzip/bunzip	.bz2;	zip/unzip	.zip;
+		2、gzip -c结果送至标准输出(stdout)利于使用管道、重定向等，-d解压缩，
+				-l详细信息，-v显示过程，-k保留原文件，-r递归查找并执行；	
+			zcat过滤器可以将一个gzip文件解压到stdout，利于使用管道、重定向等；	
+			bzip参数相似，bzip工具的压缩比较高、速度也就较慢；
+			bzcat查看.bz2文件；
+			命令格式：gzip [options] 压缩文件名 待压缩文件（多文件可空格间隔列举）；
+			将某文件排除在外进行压缩：zip 压缩文件名 待压缩文件目录 -x 排除文件名；
+			unzip filename dir;
+		3、归档命令：tar [options] filename dir（产生归档文件.tar）；
+			参数有：-c创建，-f指定文件名，-k保留已有文件，-r追加文件，-t列出文件，-u更新文件，-x展开（与归档相反，类似于压缩与解压）文件，-v显示过程，-j调用bzip，-z调用gzip（压缩得到.tar.gz文件）。
+	五、linux分区
+		1、每块硬盘可分为主分区和扩展分区共不超过4个，在扩展分区创建逻辑分区以使用扩展分区；
+		2、硬盘设备名（IDE硬盘为hdxn，SATA/SCSI等硬盘为sdXn，其中x为a-d，表示IDE硬盘个数不超过4个，X为a-z，表示硬盘数，n为1-4、5-···，1-4表示主分区或拓展分区，5及以上表示逻辑分区）；		
+		3、命令fdisk硬盘分区，-l列表查看；	
+			命令df磁盘使用检查，-h按常用单位(MB/GB等)表示大小，df dir查看目录所在磁盘情况。
+
+Day Three
+	一、Shell
+		1、env命令：显示当前用户的环境变量；(环境变量为操作系统运行程序的运行环境参数信息，例PATH为可执行程序路径信息)
+			/etc/profile为系统变量，bashrc次要且针对Bash Shell调用时读取执行；
+			每个用户的目录下文件.bash_profile中存放各用户的环境变量相关信息，.bashrc次要；
+		2、chsh命令：改变用户Shell，-l列出可用Shell，-s修改当前用户Shell；
+		3、history命令：查看Shell中的历史指令记录，参数n最近n个命令，-c清除记录，-r从histfiles读出到Shell即~/.bash_history，-w从~/.bash_history写入fistfiles；
+	二、TCP/IP
+		1、模型:链路层、网络层、传输层、应用层；（OSI还包括物理层、会话层、表示层）
+		2、IPv4地址32位分为a-e类：a类0开头8位网络号，b类10开头16位网络号，c类110开头24位网络号，d类1110开头多点播送地址，e类11110开头留用；
+			全1为局域网广播，子网网络号接全1即主机号全1为子网广播；
+			第一段为127（01111111）接非全0或全1为回路（检测本机网络）；
+			IPv6地址6段48位；
+		3、tracert（traceroute） ip或域名：追踪路由；	
+			ping：检测网络畅通；	
+			ipconfig：windows环境下查看本机ip信息；	
+			ifconfig：linux环境下查看和设置网络设备状态，通常可查看本机ip信息；
+		4、linux网络环境配置：
+			方法一：root登录，setup命令进入Text Mode Setup Utility，选择网络配置进行设置，完成后执行命令/etc/rc.d/init.d/network restart使配置生效；
+			方法二：（立即生效，当前有效）命令ifconfig eth0 x.x.x.x配置网卡ip，ifconfig eth0 network x.x.x.x配置子网掩码；
+			方法三：修改文件/etc/sysconfig/network-scripts/ifcfg-eth0,执行命令/etc/rc.d/init.d/network restart使配置生效；
+			方法一和三同效，修改启动文件；方法二则更新配置，用户再登录失效；
+	三、rpm（Redhat Packet Manager）软件包管理器
+		1、（rpm包名=软件名称-版本号.硬件平台.rpm）
+		2、命令rpm [options] 软件包名 （参数-i安装，-U升级，-e卸载，-q查询，-qa查询所有，-qi查询信息，-ql查询软件包中的文件，-qf文件路径：查询文件所属，-qp查询包介绍，-c显示配置文件，-d显示文档文件，-a显示文件状态，-l列出文件，-h显示进度，-v显示过程，-p校验文件，--nodeps不检查依赖关系）；
+		3、Debian系linux的包管理--dpkg，作为底层工具，支持上层工具如APT等；
+			dpkg参数：-i安装，-r删除，-P删除软件包及配置文件，-L列出关联文件，-l列出已装包信息，-S搜索含内容的包，-c列出包的内容，--unpack解包，--configure配置包；
+			APT（advanced packaging tool）：客户/服务器系统，/etc/apt/sources.list保存软件包获取镜像站点地址，/var/state/apt/lists保存DEB索引清单（.deb包文件）；
+			apt-get update更新包列表；
+			apt-get install/reinstall/-f install安装/重装/修复安装；
+			apt-get [-purge] remove[删除配置文件]卸载；
+			apt-get clean/autoclean删除/连同备份删除；
+			apt-get upgrade升级；
+			apt-get source下载源码；
+			apt-cache search搜索包；
+			apt-cache show获取包信息；
+			apt-cache depends查看依赖关系；
+			apt-cache stats显示系统软件包统计信息；
+			
+	四、Samba：windows与linux（unix like）文件与打印机等资源共享
+		1、使用rpm安装，文件/etc/samba/smbpasswd保存samba用户及密码以验证登录
+			（命令cat /etc/passwd|mksmbpasswd.sh>/etc/samba/passwd将linux用户都添加到samba用户中）；
+			命令service smb start/stop/restart为samba服务的启动/停止/重启；
+		2、其它配置命令有：hosts deny=x.x.x.x(阻止指定IP访问samba服务)，read only，writable，browseable，available。
+		
+Day Four
+	一、任务调度（自动执行一定时间的特定工作如备份文件、杀毒等）Cron服务
+		1、crontab文件包含送交Cron守护进程的作业和指令，每分钟检查，有工作则执行；
+		2、命令crontab [options] [filename]：参数-e编辑，-l列出，-r移除，-u指定用户，filename为使用已编辑file导入crontab；
+		3、crontab文件编辑默认自动调用vi，可修改/home/.profile中EDITOR（即设置环境变量EDITOR）；
+			文件内命令的格式为：分钟 小时 日 月 星期 工作命令
+			（时间部分*表示任意，多个时间可列举用“a,b,c”表示，时间段用“a-b”表示，时间间隔用“*/n”n用间隔时间替代表示）；
+	二、进程
+		1、进程可以理解为进行中的程序，系统基于进程分配和调度资源；
+			进程均有ID号；父进程与子进程，前台与后台进程；
+		2、线程：也叫轻量级的进程（LWP,Lightweight Progress），多线程共享进程资源，最小调度执行单元；
+		3、命令ps：进程状态，参数-a终端上所有，-u用户格式，-x显示后台，-e所有，-f全格式；
+		4、终止进程：kill [options] [进程号PID]，参数-s后接信号（HUP/1重运行，KILL/9，TERM/15终止），-l列出信号；
+			pgrep 进程名：命令查询进程；
+			killall命令终止父及子进程；
+		5、top：性能和进程监视，结果包括当前时间、系统运行时间、用户情况、系统1/5/15分钟的负载情况等；
+			参数-d监视更新速度（单位秒），-n更新次数（达到后自动结束监视），-s安全模式（无法执行交互式命令）；
+			交互式命令，即在top监视界面交互，u设置用户，k结束进程，m内存，h帮助，q退出；
+		6、date [options] [+"格式"]显示或设置系统时间；
+			options有[-d/-s "字符串"]按字符串信息显示/设置，-u显示GMT；
+			格式有%H/%k24小时制（00-23/0-23），%I/%l12小时制（00-12/0-12），%M分钟，%S秒，%p显示AM/PM，%T/%r24/12小时制（%H:%M:%S/%H:%M:%S %p），%a/A星期简称/全称，%b/B月简称/全称，%d日期，%c日期和时间（%a %b %d %H:%M:%S %Y）；
+			例：date -d "1 day ago" +"%Y-%m-%d"结果为2011-11-11
+	三、网络状态监控
+		1、netstat，参数-a所有socket，-n网络IP地址代替名称，-p显示连接建立的程序及PID，-r路由表，-e以太网统计，-s按协议统计；
+		2、traceroute数据包路由路径显示；
+		3、route本地路由表查看或修改，add添加，delete删除，change更改，print打印；
+	四、MysqL数据库
+		1、免费、跨平台、轻、支持多并发的关系型数据库管理系统RDBMS；
+		2、安装：先解压.tar.gz（可重命名mv解压文件夹），
+			创建mysql用户及组（useradd -g mysql mysql），
+			在mysql解压文件夹下先scripts/mysql_install_db  --user=mysql（初始化数据库用户为mysql），再chown -R root .（当前目录所有者变更为root，参数-R为递归），chown -R mysql data（data目录所有者变更为mysql），chgrp -R mysql .（当前目录所在组变更为mysql）；
+		3、bin/mysqld_safe --user=mysql & （启动mysql服务，&表示后台启动）；
+		4、./bin/mysql -u root -p（进入mysql界面，参数-u用户，-p密码[root用户缺省无密码]，-h主机地址）
+			mysqladmin -u 用户名 -p原密码 -password新密码（更改密码，注意无空格）；
+		5、mysql的bin目录下执行：
+			备份./mysqldump -u root -p 数据库名 > data.bak
+			恢复mysql -u root -p 数据库名 < data.bak
+			
+Day Five
+	一、SSH（Secure Shell）
+		1、应用层和传输层间，远程登录会话等网络服务的安全协议。TCP协议，端口22。服务器端sshd进程（一个daemon[守护进程]），客户端client认证、登录、传输等。
+		2、使用：服务器端sshd运行；客户端机ping通服务器端机；client运行，GUI功能易用；服务器端可通过kill对应进程断开某客户端的连接。
+		
+	二、补充
+		1、通配符：*多个字符，？单个字符，[]范围；
+		2、alias别名设置，命令为：alias 别名='命令'，参数-p显示当前设定的别名；
+		3、linux启动过程：
+			a、BIOS（basic input output system）自检；
+			b、启动GRUB（GRand Unified Bootloader，来自GNU多操作系统启动程序）或LILO（Linux Loader）；
+			c、运行Linux内核，检测硬件；
+			d、init进程启动，读取系统引导配置文件/etc/inittab；
+			e、系统初始化/etc/rc.d/rc.sysinit；
+			f、/etc/rc.d/rcX.d/[KS]*	根据运行级别X配置服务，终止K开头服务，开始S开头服务；
+			g、特殊本地配置/etc/rc.d/rc.local；
+			h、其他服务；
+		4、find命令：查找
