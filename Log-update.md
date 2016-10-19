@@ -17,6 +17,14 @@ Log info.
 2. Get the basics of Markdown in a markdown file.  
     Some clean-up work is done by the mean time.
 
+3. - Add 3 notes,4 pics,and 1 fork file:
+     - A git-note,now just about sparce-checkout;
+     - A java-intro file;
+     - A java-fundamental file;
+     - 4 pics about java syntax;
+     - A markdown-syntax file from github.
+   - Modified the markdown-intro.Add info about jumping within the page.
+
 -----
 
 Arrengements
