@@ -83,7 +83,7 @@ Vim is rock stable and is continuously being developed to become even better. Am
         G/gg 移动到<count>行并光标移到第一非空字符，默认末/首行；
         :[range] 光标移到[range]中最后数字行；
         {count}% 移动到{count}%的行；
-        gj/gk 在结合操作符或折行时与j/k效果有不同；
+        gj/gk (exclusive) 在结合操作符或折行时与j/k(inclusive)效果有不同；
     5、文本结构化移动（Text object Motions） (/)/{/}/]]/][/[]/[[
         (/) 向后（backward）/前（Forward）<count>句（sentences）；
         {/} 向后/前<count>段落（paragraphs）；
@@ -207,7 +207,7 @@ Vim is rock stable and is continuously being developed to become even better. Am
         {Visual}[count]< 向左缩进高亮行[count]个"shiftwidth";
         >{motion} >> {Visual}[count]> 类上但向右；
         :[range]< 向左缩进[range]行一个"shiftwidth";
-    10、调整格式Format :ce/:ri/:le/gq/gw/=
+    10、调整格式Format :le/:ri/:le/gq/gw/=
         :[range]le[ft] [indent] 左对齐[range]行；
         :[range]ri[ght] [width] 在[width】列处右对齐[range]行；
         :[range]ce[nter] [width] 在[width]宽度下对[range]行居中对齐；
@@ -245,7 +245,7 @@ Vim is rock stable and is continuously being developed to become even better. Am
         :e[dit][!] [++opt] [+cmd] {file} 类上，但编辑文件{file}；
         :ene[w][!] 编辑一个新的未命名的buffer，! 表示不考虑当前buffer是否已更改；
         :fin[d][!] [++opt] [+cmd] {file} 在'path'中查找文件{file}并编辑[第[count]个匹配的文件]；
-        :CTRL-^ 编辑alternate file，通常the previous edited file 就是the alternate file；
+        CTRL-^ 编辑alternate file，通常the previous edited file 就是the alternate file；
         :{count}CTRL-^ 编辑buffer list中的第{Count}个文件；
         :e #[count] 类上，但当buffer没有file name时命令失效；
         :[count]gf 跳到光标处后之后的[第[count]个文件]编辑，Mnemonic:"goto file"；
@@ -271,9 +271,9 @@ Vim is rock stable and is continuously being developed to become even better. Am
         :q[uit] 退出窗口，离开编辑；
         :wq[!] [++opt] [file] 保存为[file]并退出，! 表示忽略更改；
         :[range]wq[!] [++opt] [file] 类上，但只写入[range]行；
-        :ZZ 退出编辑，如果已更改则写入文件；
+        ZZ 退出编辑，如果已更改则写入文件；
         :x 同上；
-        :ZQ 同:q! ；
+        ZQ 同:q! ；
         :qa[ll][!] 退出所有编辑；
         :xa[ll] 类上，但检查已更改则写入；
 
@@ -306,8 +306,8 @@ Vim is rock stable and is continuously being developed to become even better. Am
             CTRL-W b 类上，但（bottom-right);
             CTRL-W p 移动光标到前一个（previous)窗口；
         窗口调整： CTRL-W r/H/J/K/L/=
-            CTRL-W r 将同一行的窗口向右rightwards旋转调序/将同一列的窗口向下downwards旋转调序（rotate）；
-            CTRL-W R 类上，但向左leftwards/向上upwards；
+            CTRL-W r 将同一列的窗口向下downwards旋转调序/将同一行的窗口向右rightwards旋转调序（rotate）；
+            CTRL-W R 类上，但向上upwards/向左leftwards；
             CTRL-W K 将当前窗口在最上（the very top）展开，调整为上下分屏；
             CTRL-W J/H/L 类上，但最下（the very bottom）/最左（the far left）/最右（the far right）;
             CTRL-W T 在新页面打开当前窗口,在第[count]个页面之前打开页面；
