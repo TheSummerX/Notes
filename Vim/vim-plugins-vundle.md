@@ -4,20 +4,20 @@
 _It's a summary of the commands and key mappings of the plugins installed via Vundle._
 
 ---
->  Dir:
->     [Nerdtree](#1)
->     [NERDCommenter](#2)
->     [Tagbar](#3)
->     [CtrlP](#4)
->     [Python-mode](#5)
->     [Syntastic](#6)
->     [Vim-Trailing-Whitespace](#7)
->     [YCM](#8)
->     [Ultisnips](#9)
->     [Vim-Markdown](#10)
->     [TaskList](#11)
->     [BufExplorer](#12)
->     [Vim-Surround](#13)
+> ### Dir:
+> - [Nerdtree](#1)
+> - [NERDCommenter](#2)
+> - [Tagbar](#3)
+> - [CtrlP](#4)
+> - [Python-mode](#5)
+> - [Syntastic](#6)
+> - [Vim-Trailing-Whitespace](#7)
+> - [YCM](#8)
+> - [Ultisnips](#9)
+> - [Vim-Markdown](#10)
+> - [TaskList](#11)
+> - [BufExplorer](#12)
+> - [Vim-Surround](#13)
 
 ---
 

@@ -9,7 +9,7 @@
 	$vdir ：显示详细目录，类似ls -l
 	$locate file：在预先建立好的档案数据库中查询文件. slocate命令是locate的安全版本
 	$strings命令在二进制或数据文件中找出可打印字符
-	
+
 3、比较
 	$diff <-c/-u> file1 file2：逐行比较目标文件，输出两个文件中不同的行, 并会通过符号标识出每个不同行所属的文件
 		输出分3种格式：正常格式（normal）上下文格式（context）合并格式（unified）；
